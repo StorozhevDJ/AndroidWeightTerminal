@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.intex.weightterminal.MainActivity">
+    <item
+        android:id="@+id/action_settings_display"
+        android:orderInCategory="100"
+        android:title="@string/action_settings_display"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sensors_data"
+        android:orderInCategory="100"
+        android:title="@string/action_sensors_data"
+        app:showAsAction="never" />
+</menu>

@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Весовой терминал</string>
+    <string name="indicator_setting_frame">Настройки индикации</string>
+
+    <!-- Menu -->
+    <string name="action_settings_display">Настройки индикации</string>
+    <string name="action_sensors_data">Данные датчиков</string>
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <!--  -->
+    <string name="hello_first_fragment">Установление связи с весовым индикатором</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <!-- Bluetooth link -->
+    <string name="bt_disabled">BlueTooth отключен</string>
+    <string name="bt_not_connected">Нет связи Bluetooth</string>
+    <string name="bt_connecting">Установление Bluetooth соединения</string>
+    <string name="bt_connected">Bluetooth соединение установлено</string>
+    <string name="bt_device_not_found">Весовой индикатор не найден</string>
+    <string name="bt_not_supported">BlueTooth не поддерживается данным устройством. Работа не возможна.</string>
+
+    <!-- Main indicator -->
+    <string name="weight">Вес (кг): </string>
+    <string name="volume">Объем (литры): </string>
+
+    <!-- Indicator settings -->
+    <string name="units_measure">Единицы измерения: </string>
+    <string name="kilos">Килограммы</string>
+    <string name="liters">Литры</string>
+
+    <string name="density">Плотность вещества (кг/м3): </string>
+
+</resources>
