@@ -7,8 +7,12 @@ import android.util.Log;
 
 import com.intex.weightterminal.exception.ErrorCode;
 import com.intex.weightterminal.exception.WeightTerminalException;
+import com.intex.weightterminal.models.SettingsModel;
+import com.intex.weightterminal.models.WeightModel;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
@@ -18,7 +22,6 @@ public class Bluetooth {
     private final String TAG = this.getClass().getSimpleName();
     // SPP UUID service
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    private final static int REQUEST_ENABLE_BT = 1;
 
     // BluetoothAdapter - отвечает за работу с установленным в телефоне Bluetooth модулем.
     // Экземпляр этого класса есть в любой программе, использующей bluetooth.
@@ -31,29 +34,52 @@ public class Bluetooth {
     // BluetoothDevice - класс, ассоциирующийся с удаленным Bluetooth устройством.
     // Экземпляр этого класса используется для соединения через BluetoothSocket
     // или для запроса информации об удаленном устройстве (имя, адресс, класс, состояние).
-    private BluetoothDevice device;
+    private BluetoothDevice bluetoothDevice;
 
     // BluetoothSocket- интерфейс для Bluetooth socket, аналогичный TCP сокетам.
     // Это точка соединения, позволяющая обмениваться данными с удаленным устройством через InputStream и OutputStream.
     private BluetoothSocket bluetoothSocket;
 
-    private boolean connected = false;
+    private InputStream mmInStream;
+    private OutputStream mmOutStream;
+
+
+    public boolean isConnected() {
+        if (bluetoothSocket == null) return false;
+        return bluetoothSocket.isConnected();
+    }
+
+    public BluetoothDevice getBluetoothDevice() {
+        return bluetoothDevice;
+    }
 
 
     /**
-     * Connect to paired BlueTooth device
+     * Send this String data to the remote device
      */
-    public void connect() throws WeightTerminalException {
-        boolean connected = false;
-        connected = false;
+    private void write(String message) {
+        Log.d(TAG, "...Данные для отправки: " + message + "...");
+        byte[] msgBuffer = message.getBytes();
+        try {
+            mmOutStream.write(msgBuffer);
+        } catch (IOException e) {
+            Log.d(TAG, "...Ошибка отправки данных: " + e.getMessage() + "...");
+        }
+    }
+
+
+    /**
+     * Find paired BlueTooth device
+     */
+    public void findDevice() throws WeightTerminalException {
+        bluetoothSocket = null;
+        bluetoothDevice = null;
         if (mBluetoothAdapter == null) {
             Log.d(TAG, "Bluetooth not supported");
             throw new WeightTerminalException(ErrorCode.BT_NOT_SUPPORTED);
         }
         // Is Bluetooth turn off? Request to user to enable.
         if (!mBluetoothAdapter.isEnabled()) {
-            //Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            //startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             Log.d(TAG, "Bluetooth disabled");
             throw new WeightTerminalException(ErrorCode.BT_DISABLED);
         }
@@ -65,9 +91,11 @@ public class Bluetooth {
                         BluetoothSocket bs = (BluetoothSocket) m.invoke(device, 1);
                         if (!"WEIGHT-TERMINAL".equals(device.getName())) continue;
                         bs.connect();
-                        connected = false;
+                        bluetoothDevice = device;
+                        bluetoothSocket = bs;
+                        mmInStream = bs.getInputStream();
+                        mmOutStream = bs.getOutputStream();
                         Log.d(TAG, device.getAddress() + " " + device.getName() + " - connected");
-                        connected = true;
                         return;
                     } catch (IOException e) {
                         Log.e(TAG, "IOException: " + e.getLocalizedMessage());
@@ -90,21 +118,19 @@ public class Bluetooth {
     }
 
 
-    public boolean isConnected() {
-        return connected;
-    }
+    public WeightModel[] getWeight() throws WeightTerminalException {
 
-    public void setConnected(boolean connected) {
-        this.connected = connected;
-    }
-
-    public BluetoothDevice getDevice() {
-        return device;
-    }
-
-    public void setDevice(BluetoothDevice device) {
-        this.device = device;
+        return null;
     }
 
 
+    public SettingsModel getSettings() throws WeightTerminalException {
+
+        return null;
+    }
+
+    public void saveSettings(SettingsModel settingsModel) throws WeightTerminalException {
+
+        return;
+    }
 }

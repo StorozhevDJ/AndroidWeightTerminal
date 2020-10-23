@@ -17,7 +17,7 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
     <!-- Bluetooth link -->
-    <string name="bt_disabled">BlueTooth отключен</string>
+    <string name="bt_disabled">Bluetooth отключен. Включите Bluetooth и попробуйте еще раз.</string>
     <string name="bt_not_connected">Нет связи Bluetooth</string>
     <string name="bt_connecting">Установление Bluetooth соединения</string>
     <string name="bt_connected">Bluetooth соединение установлено</string>
@@ -25,8 +25,11 @@
     <string name="bt_not_supported">BlueTooth не поддерживается данным устройством. Работа не возможна.</string>
 
     <!-- Main indicator -->
-    <string name="weight">Вес (кг): </string>
-    <string name="volume">Объем (литры): </string>
+    <string name="weight_total">Общий вес (кг): </string>
+    <string name="volume_total">Общий объем (литры): </string>
+    <string name="weight_sensor">Вес (кг): </string>
+    <string name="address_sensor">Адрес: </string>
+    <string name="serial_sensor">Серийный номенр: </string>
 
     <!-- Indicator settings -->
     <string name="units_measure">Единицы измерения: </string>
