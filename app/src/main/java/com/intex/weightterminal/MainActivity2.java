@@ -29,14 +29,14 @@ public class MainActivity2 extends Activity {
     Handler h;
 
     private static final int REQUEST_ENABLE_BT = 1;
-    final int RECIEVE_MESSAGE = 1;        // Статус для Handler
+    private final int RECIEVE_MESSAGE = 1;        // Status Handler
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private StringBuilder sb = new StringBuilder();
 
     private ConnectedThread mConnectedThread;
 
-    // SPP UUID сервиса
+    // SPP UUID service
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     // MAC-адрес Bluetooth модуля
@@ -51,9 +51,9 @@ public class MainActivity2 extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        btnOn = findViewById(R.id.button_first);                    // кнопка включения
-        btnOff = findViewById(R.id.button_second);                // кнопка выключения
-        txtArduino = findViewById(R.id.textview_first);        // для вывода текста, полученного от Arduino
+        btnOn = (Button) findViewById(R.id.button_first);                    // кнопка включения
+        btnOff = (Button) findViewById(R.id.button_save_settings);                // кнопка выключения
+        txtArduino = (TextView) findViewById(R.id.textview_first);        // для вывода текста, полученного от Arduino
 
         h = new Handler() {
             public void handleMessage(@NonNull android.os.Message msg) {

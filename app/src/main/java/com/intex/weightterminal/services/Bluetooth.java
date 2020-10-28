@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class Bluetooth {
 
-    private final String TAG = this.getClass().getSimpleName();
+    private static final String TAG = "Bluetooth";
     // SPP UUID service
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
@@ -42,6 +42,24 @@ public class Bluetooth {
 
     private InputStream mmInStream;
     private OutputStream mmOutStream;
+
+
+    private static volatile Bluetooth instance;
+
+    public static Bluetooth getInstance() {
+        Bluetooth localInstance = instance;
+        if (localInstance == null) {
+            synchronized (Bluetooth.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new Bluetooth();
+                    Log.d(TAG, "create new instance");
+                }
+            }
+        }
+        Log.d(TAG, "return instance");
+        return localInstance;
+    }
 
 
     public boolean isConnected() {
