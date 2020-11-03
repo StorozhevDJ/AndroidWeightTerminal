@@ -22,8 +22,10 @@ import com.intex.weightterminal.fragments.FirstFragment;
 import com.intex.weightterminal.fragments.MeasuredDataFragment;
 import com.intex.weightterminal.models.WeightModel;
 import com.intex.weightterminal.services.Bluetooth;
+import com.intex.weightterminal.services.BluetoothDataType;
 
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,15 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int BT_NOT_SUPPORTED = 4;
     private static final int BT_DEVICE_NOT_FOUND = 5;
 
-
-    //private Handler h;
-    //private Handler btConnectHandler;
-
     private FirstFragment firstFragment;
     private MeasuredDataFragment measuredDataFragment;
     private FragmentTransaction fTrans;
-
-    private Timer mTimer;
 
     private Bluetooth bt = Bluetooth.getInstance();
     private static BtFindDeviceTask btFindDeviceTask;
@@ -71,15 +67,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
-        //h = testHandler();
-        //h.sendEmptyMessage(0);
-
-        //btConnectHandler = bluetoothConnectHandler();
-        //btConnectHandler.sendEmptyMessage(BT_NOT_CONNECTED);
-
-        //Thread t = bluetoothConnectThread();
-        //t.start();
 
         btFindDeviceTask = new BtFindDeviceTask(bt);
         btFindDeviceTask.execute();
@@ -157,18 +144,9 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings_display) {
             Log.d(TAG, "Menu Setting clicked");
-            //Thread t = testThread();
-            //t.start();
-            //FragmentTransaction tran = getFragmentManager().beginTransaction();
-            //tran.replace(R.id.FirstFragment, R.id.MeasuredDataFragment/*new MeasuredDataFragment()*/);
-            //NavHostFragment.findNavController(firstFragment).navigate(R.id.action_FirstFragment_to_SecondFragment);
-            //Fragment yoursFragment=new MeasuredDataFragment();
-            // fTrans.replace(R.id.nav_host_fragment, yoursFragment);
             return true;
         }
         if (id == R.id.action_sensors_data) {
-            /*Thread t = bluetoothConnectThread();
-            t.start();*/
             btFindDeviceTask = new BtFindDeviceTask(bt);
             btFindDeviceTask.execute();
         }
@@ -176,110 +154,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    /*private Handler testHandler() {
-        return new Handler() {
-            public void handleMessage(android.os.Message msg) {
-                TextView textView = findViewById(R.id.textview_first);
-                if (textView == null) return;
-                if (msg == null) return;
-                switch (msg.what) {
-                    case 0:
-                        textView.setText("Not connected");
-                        break;
-                    case 1:
-                        textView.setText("Connecting");
-                        break;
-                    case 2:
-                        textView.setText("Connected");
-                        break;
-                }
-            }
-        };
-    }
-
-
-    private Thread testThread() {
-        return new Thread(new Runnable() {
-            public void run() {
-                try {
-                    // устанавливаем подключение
-                    h.sendEmptyMessage(1);
-                    TimeUnit.SECONDS.sleep(2);
-
-                    // установлено
-                    h.sendEmptyMessage(2);
-
-                    // выполняется какая-то работа
-                    TimeUnit.SECONDS.sleep(3);
-
-                    // разрываем подключение
-                    h.sendEmptyMessage(0);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }*/
-
-
-    /*private Handler bluetoothConnectHandler() {
-        return new Handler() {
-            public void handleMessage(@NonNull android.os.Message msg) {
-                TextView textView = findViewById(R.id.textview_first);
-                if (textView == null) return;
-                if (msg == null) return;
-                switch (msg.what) {
-                    case BT_NOT_CONNECTED:
-                        textView.setText(getString(R.string.bt_not_connected));
-                        break;
-                    case BT_CONNECTING:
-                        textView.setText(getString(R.string.bt_connecting));
-                        break;
-                    case BT_CONNECTED:
-                        textView.setText(getString(R.string.bt_connected));
-                        break;
-                    case BT_DISABLED:
-                        textView.setText(getString(R.string.bt_disabled));
-                        break;
-                    case BT_NOT_SUPPORTED:
-                        textView.setText(getString(R.string.bt_not_supported));
-                        break;
-                    case BT_DEVICE_NOT_FOUND:
-                        textView.setText(getString(R.string.bt_device_not_found));
-                        break;
-                }
-            }
-        };
-    }
-
-
-    private Thread bluetoothConnectThread() {
-        return new Thread(new Runnable() {
-            public void run() {
-                // Start connecting
-                btConnectHandler.sendEmptyMessage(BT_CONNECTING);
-                try {
-                    bt.connect();
-                    btConnectHandler.sendEmptyMessage(BT_CONNECTED);
-                } catch (WeightTerminalException e) {
-                    //Bluetooth NOT connected
-                    switch (e.getError()) {
-                        case BT_DISABLED:
-                            btConnectHandler.sendEmptyMessage(BT_DISABLED);
-                            break;
-                        case BT_NOT_SUPPORTED:
-                            btConnectHandler.sendEmptyMessage(BT_NOT_SUPPORTED);
-                            break;
-                        case BT_DEVICE_NOT_FOUND:
-                            btConnectHandler.sendEmptyMessage(BT_DEVICE_NOT_FOUND);
-                            break;
-                    }
-                }
-            }
-        });
-    }*/
 
 
     class BtFindDeviceTask extends AsyncTask<Void, Integer, Void> {
@@ -368,19 +242,24 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             Log.d(TAG, "onPreExecute");
             super.onPostExecute(result);
-            /*TextView tvInfo = findViewById(R.id.tvConnectStatus);
-            if (tvInfo != null) tvInfo.setText("End");*/
             if (bt == null) return;
             if (bt.isConnected()) {
-
+                //ToDo add code
             }
+
         }
     }
 
 
-    class BtGetWeightTask extends AsyncTask<Void, WeightModel[], Void> {
+    /**
+     * Task for request measured weight and print to display
+     */
+    class BtGetWeightTask extends AsyncTask<Void, WeightModel, Void> {
 
         private Bluetooth bt;
+
+        private Timer mTimer;
+        private BtGetWeightTimerTask btGetWeightTimerTask;
 
         public BtGetWeightTask(Bluetooth bt) {
             this.bt = bt;
@@ -389,38 +268,83 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            TextView tvInfo = findViewById(R.id.textview_first);
-            if (tvInfo != null) tvInfo.setText(getString(R.string.bt_connecting));
+            mTimer = new Timer();
+            btGetWeightTimerTask = new BtGetWeightTimerTask(bt);
+            //mTimer.schedule(mMyTimerTask, 1000);// singleshot delay 1000 ms
+            mTimer.schedule(btGetWeightTimerTask, 5000, 1000);
         }
 
         @Override
         protected Void doInBackground(Void... arg) {
-            try {
-                WeightModel[] weightModel = bt.getWeight();
-                publishProgress(weightModel);
-            } catch (WeightTerminalException e) {
-                Log.e(TAG, "Get weight error: " + e.getError().name());
+            while (true) {
+                if (bt.getReceivedDataType() == BluetoothDataType.MEASURE_DATA) {
+                    WeightModel weightModel = bt.getData(BluetoothDataType.MEASURE_DATA);
+                    bt.clearReceivedDataType();
+                    publishProgress(weightModel);
+                }
+                if (isCancelled()) return null;
             }
-            return null;
         }
 
 
         @Override
-        protected void onProgressUpdate(WeightModel[]... values) {
+        protected void onProgressUpdate(WeightModel... values) {
             super.onProgressUpdate(values);
-            TextView tvInfo = findViewById(R.id.textview_first);
-            if (tvInfo == null) return;
-
+            TextView tvWeight = findViewById(R.id.tvWeightTotalValue);
+            if (tvWeight != null)
+                tvWeight.setText(String.format("%.02f", values[0].getWeightTotal()));
+            TextView tvVolume = findViewById(R.id.tvVolumeValue);
+            if (tvWeight != null) tvVolume.setText(String.format("%f", values[0].getVolume()));
         }
+
 
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            /*TextView tvInfo = findViewById(R.id.textview_first);
-            if (tvInfo != null) tvInfo.setText("End");*/
-
+            //TextView tvInfo = findViewById(R.id.textview_first);
+            //if (tvInfo != null) tvInfo.setText("End");
         }
     }
 
+    /**
+     * Timer task for sending request to get measured data
+     */
+    class BtGetWeightTimerTask extends TimerTask {
+
+        private Bluetooth bt;
+
+        /*private int i = 0;//for test
+        private String weightString = new String();*/
+
+        public BtGetWeightTimerTask(Bluetooth bt) {
+            this.bt = bt;
+            try {
+                bt.connect();
+            } catch (WeightTerminalException e) {
+                Log.d(TAG, "BT Connect FAILED: " + e.getError().name());
+            }
+        }
+
+        @Override
+        public void run() {
+
+            if (bt.isConnected()) bt.requestMeasuredData();
+
+            /*weightString = String.format("%.2f", (float) i++/100);
+
+            final WeightModel w = bt.getData(BluetoothDataType.MEASURE_DATA);
+
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    TextView tvWeight = findViewById(R.id.tvWeightTotalValue);
+                    if (tvWeight != null) tvWeight.setText(weightString);
+                    TextView tvVolume = findViewById(R.id.tvVolumeValue);
+                    if (tvWeight != null) tvVolume.setText(String.format("%d", w.getVolume()));
+                }
+            });*/
+        }
+    }
 
 }
